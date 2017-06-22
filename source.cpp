@@ -8,7 +8,7 @@ using namespace std;
 
 #define NMAX 105
 
-int lines, colums, answer, gameType;
+int lines, columns, answer, gameType;
 int globalMap[NMAX][NMAX];
 char s[NMAX];
 char viz[NMAX][NMAX];
@@ -101,23 +101,23 @@ void showRules() {
 void setEnemyMatrix(int type) {
     if(type == 1) {
         lines = 5;
-        colums = 5;
+        columns = 5;
         for(int i = 1; i <= lines; i++)
-            for(int j = 1; j <= colums; j++)
+            for(int j = 1; j <= columns; j++)
                 player2.mymap[i][j] = panda[i][j];
     }
     else if(type == 2) {
         lines = 11;
-        colums = 10;
+        columns = 10;
         for(int i = 1; i <= lines; i++)
-            for(int j = 1; j <= colums; j++)
+            for(int j = 1; j <= columns; j++)
                 player2.mymap[i][j] = vampire[i][j];
     }
     else if(type == 3) {
         lines = 14;
-        colums = 15;
+        columns = 15;
         for(int i = 1; i <= lines; i++)
-            for(int j = 1; j <= colums; j++)
+            for(int j = 1; j <= columns; j++)
                 player2.mymap[i][j] = nascar[i][j];
     }
 }
@@ -125,8 +125,8 @@ void setEnemyMatrix(int type) {
 void customSize() {
     printf("Please write the number of rows for the matrix: \n");
     scanf("%d",&lines);
-    printf("Please write the number of colums for the matrix: \n");
-    scanf("%d",&colums);
+    printf("Please write the number of columns for the matrix: \n");
+    scanf("%d",&columns);
 }
 
 void chooseSize() {
@@ -142,18 +142,18 @@ void chooseSize() {
     return ;
 }
 
-int dfs(int pLine, int pColum) {
-    if(pLine == lines && pColum == colums)
+int dfs(int pLine, int pcolumn) {
+    if(pLine == lines && pcolumn == columns)
         return 1;
-    viz[pLine][pColum] = 1;
+    viz[pLine][pcolumn] = 1;
     for(int dir = 0; dir < 4; dir++) {
         int sLine = pLine + dx[dir];
-        int sColum = pColum + dy[dir];
-        if(sLine < 1 || sLine > lines || sColum < 1 || sColum > colums || viz[sLine][sColum] || globalMap[sLine][sColum])
+        int scolumn = pcolumn + dy[dir];
+        if(sLine < 1 || sLine > lines || scolumn < 1 || scolumn > columns || viz[sLine][scolumn] || globalMap[sLine][scolumn])
             continue;
-        int verdict = dfs(sLine, sColum);
+        int verdict = dfs(sLine, scolumn);
         if(verdict) {
-            viz[pLine][pColum] = 0;
+            viz[pLine][pcolumn] = 0;
             return verdict;
         }
     }
@@ -161,16 +161,16 @@ int dfs(int pLine, int pColum) {
 }
 
 int checkMatrix(int matrix[NMAX][NMAX]) {
-    if(matrix[1][1] || matrix[lines][colums]) {
+    if(matrix[1][1] || matrix[lines][columns]) {
         printf("Incorrect map. Please try again.\n");
         return 0;
     }
     for(int i = 1; i <= lines; i++)
-        for(int j = 1; j <= colums; j++)
+        for(int j = 1; j <= columns; j++)
             globalMap[i][j] = matrix[i][j];
     int verdict = dfs(1,1);
     for(int i = 1; i <= lines; i++)
-        for(int j = 1; j <= colums; j++)
+        for(int j = 1; j <= columns; j++)
             viz[i][j] = 0;
     if(!verdict) {
         printf("Incorrect map. Please try again.\n");
@@ -182,14 +182,14 @@ void customMap(int index) {
     int ok;
     char car;
     if(index == 1) {
-        printf("Player1, please write the map which you will use for the game. Write an %d x %d matrix using . for free cells and x for occupied cells. You should type %d lines, each line containing %d characters.\n", lines, colums, lines, colums);
+        printf("Player1, please write the map which you will use for the game. Write an %d x %d matrix using . for free cells and x for occupied cells. You should type %d lines, each line containing %d characters.\n", lines, columns, lines, columns);
         scanf("\n");
         do {
             ok = 1;
             for(int i = 1; i <= lines; i++)
-                for(int j = 1; j <= colums + 1 && ok; j++) {
+                for(int j = 1; j <= columns + 1 && ok; j++) {
                     scanf("%c", &car);
-                    if(j <= colums && car != '.' && car != 'x') {
+                    if(j <= columns && car != '.' && car != 'x') {
                         printf("Incorrect map. Please try again.\n");
                         ok = 0;
                     }
@@ -201,14 +201,14 @@ void customMap(int index) {
         }while(!ok);
     }
     else {
-        printf("Player2, please write the map which you will use for the game. Write an %d x %d matrix using . for free cells and x for occupied cells. You should type %d lines, each line containing %d characters.\n", lines, colums, lines, colums);
+        printf("Player2, please write the map which you will use for the game. Write an %d x %d matrix using . for free cells and x for occupied cells. You should type %d lines, each line containing %d characters.\n", lines, columns, lines, columns);
         scanf("\n");
         do {
             ok = 1;
             for(int i = 1; i <= lines; i++)
-                for(int j = 1; j <= colums + 1 && ok; j++) {
+                for(int j = 1; j <= columns + 1 && ok; j++) {
                     scanf("%c", &car);
-                    if(j <= colums && car != '.' && car != 'x') {
+                    if(j <= columns && car != '.' && car != 'x') {
                         printf("Incorrect map. Please try again.\n");
                         ok = 0;
                     }
@@ -236,7 +236,7 @@ void setInformationAboutEnemy() {
     player2.pos.first = player2.pos.second = 1;
 
     for(int i = 1; i <= lines; i++)
-        for(int j = 1; j <= colums; j++) {
+        for(int j = 1; j <= columns; j++) {
             player1.enemyMap[i][j] = 2;
             player2.enemyMap[i][j] = 2;
         }
@@ -277,11 +277,11 @@ void beforeStartGame() {
 }
 
 int isItDone() {
-    if(player1.pos.first == lines && player1.pos.second == colums) {
+    if(player1.pos.first == lines && player1.pos.second == columns) {
         printf("Player 1 Wins.\n");
         return 1;
     }
-    if(player2.pos.first == lines && player2.pos.second == colums) {
+    if(player2.pos.first == lines && player2.pos.second == columns) {
         printf("Player 2 Wins.\n");
         return 1;
     }
@@ -289,12 +289,12 @@ int isItDone() {
 }
 
 int validPosition(pair<int,int> pos, Player player) {
-    return (!(pos.first < 1 || pos.first > lines || pos.second < 1 || pos.second > colums || player.mymap[pos.first][pos.second]));
+    return (!(pos.first < 1 || pos.first > lines || pos.second < 1 || pos.second > columns || player.mymap[pos.first][pos.second]));
 }
 
 void printMatrix(Player player) {
     for(int i = 1; i <= lines; i++, printf("\n"))
-        for(int j = 1; j <= colums; j++)
+        for(int j = 1; j <= columns; j++)
             if(i == player.pos.first && j == player.pos.second)
                 printf("P");
             else {
