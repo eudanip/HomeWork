@@ -2,7 +2,6 @@
 #include<algorithm>
 #include<stdlib.h>
 #include<string.h>
-#include<conio.h>
 #include<windows.h>
 
 using namespace std;
@@ -101,7 +100,6 @@ void chooseSize() {
 }
 
 int dfs(int pLine, int pColum) {
-    //printf("Am ajuns la %d %d %d\n", pLine, pColum, globalMap[pLine][pColum]);
     if(pLine == lines && pColum == colums)
         return 1;
     viz[pLine][pColum] = 1;
@@ -116,7 +114,6 @@ int dfs(int pLine, int pColum) {
             return verdict;
         }
     }
-    //viz[pLine][pColum] = 0;
     return 0;
 }
 
@@ -145,10 +142,7 @@ void customMap(int index) {
         printf("Player1, please write the map which you will use for the game. Write an %d x %d matrix using . for free cells and x for occupied cells. You should type %d lines, each line containing %d characters.\n", lines, colums, lines, colums);
         scanf("\n");
         do {
-            int digit;
             ok = 1;
-            //scanf("%d",&digit);
-            //freopen("player1.txt","r",stdin);
             for(int i = 1; i <= lines; i++)
                 for(int j = 1; j <= colums + 1 && ok; j++) {
                     scanf("%c", &car);
@@ -158,7 +152,6 @@ void customMap(int index) {
                     }
                     player1.mymap[i][j] = (car == '.' ? 0 : 1);
                 }
-            //fclose(stdin);
             if(!ok)
                 continue;
             ok = checkMatrix(player1.mymap);
@@ -168,10 +161,7 @@ void customMap(int index) {
         printf("Player2, please write the map which you will use for the game. Write an %d x %d matrix using . for free cells and x for occupied cells. You should type %d lines, each line containing %d characters.\n", lines, colums, lines, colums);
         scanf("\n");
         do {
-            int digit;
             ok = 1;
-            //scanf("%d",&digit);
-            //freopen("player2.txt","r",stdin);
             for(int i = 1; i <= lines; i++)
                 for(int j = 1; j <= colums + 1 && ok; j++) {
                     scanf("%c", &car);
@@ -181,17 +171,11 @@ void customMap(int index) {
                     }
                     player2.mymap[i][j] = (car == '.' ? 0 : 1);
                 }
-            //fclose(stdin);
             if(!ok)
                 continue;
-      /*      for(int i = 1; i <= lines; i++, printf("\n"))
-                for(int j = 1; j <= colums; j++)
-                    printf("%d", player2.mymap[i][j]);*/
             ok = checkMatrix(player2.mymap);
         }while(!ok);
     }
-    for(int i = 1; i <= 100; i++)
-        printf("BLA BLA BLA !!!!!\n");
 }
 
 void setInformationAboutEnemy() {
@@ -272,8 +256,6 @@ int playGame(Player &player1, Player &player2) {
             scanf("%c", &direction);
         }while(direction != 'N' && direction != 'S' && direction != 'E' && direction != 'W');
 
-        //printf("Am gasit directia %c\n", direction);
-
         if(direction == 'N') {
             nextPos = make_pair(player1.pos.first - 1, player1.pos.second);
         } else if(direction == 'S') {
@@ -283,16 +265,14 @@ int playGame(Player &player1, Player &player2) {
         } else {
             nextPos = make_pair(player1.pos.first, player1.pos.second - 1);
         }
-        //printf("%d %d pula\n", nextPos.first, nextPos.second);
         if(!validPosition(nextPos, player2)) {
             printf("Tzeapa. N-ai mai luat tzeapa? Fortza Steaua!!!!\n");
             player1.enemyMap[nextPos.first][nextPos.second] = 1;
             break;
         }
-        //printf("e valid plm\n");
+
         player1.pos = nextPos;
         player1.enemyMap[nextPos.first][nextPos.second] = 0;
-        //printf("am matcat\n");
         if(isItDone()) {
             return 1;
         }
