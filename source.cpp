@@ -176,6 +176,9 @@ void customMap(int index) {
             ok = checkMatrix(player2.mymap);
         }while(!ok);
     }
+    for(int i = 1; i <= 100; i++) {
+        printf("BLA BLA BLA\n");
+    }
 }
 
 void setInformationAboutEnemy() {
