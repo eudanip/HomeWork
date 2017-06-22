@@ -3,13 +3,14 @@
 #include<stdlib.h>
 #include<string.h>
 #include<windows.h>
+#include<time.h>
 
 using namespace std;
 
 #define NMAX 105
 
 int lines, columns, answer, gameType;
-int globalMap[NMAX][NMAX];
+int globalMap[NMAX][NMAX], dist[NMAX][NMAX];
 char s[NMAX];
 char viz[NMAX][NMAX];
 int dx[4] = {-1,0,1,0};
@@ -135,7 +136,7 @@ void chooseSize() {
         customSize();
         return ;
     }
-    printf("Choose the map you want to play agains:\n 1 - Panda Map\n 2 - Vampire Map\n 3 - Nascar Map");
+    printf("Choose the map you want to play agains:\n 1 - Panda Map\n 2 - Vampire Map\n 3 - Nascar Map\n");
     scanf("%d",&answer);
     setEnemyMatrix(answer);
 
@@ -332,13 +333,69 @@ int playGame(Player &player1, Player &player2) {
         if(isItDone()) {
             return 1;
         }
-        printf("Mutare valida. Mai ai inca o incercare.\n");
+        printf("Good move. You have one more try.\n");
     }
     return 0;
 }
 
+int playAI() {
+    while(1) {
+        printMatrix(player2);
+        Sleep(2000);
+        int prob = rand() % 100 + 1;
+        int diff = 50 + (player2.difficulty * 10);
+        if(prob <= diff) {
+            for(int i = 0; i < 4; i++) {
+                int sx = player2.pos.first + dx[i];
+                int sy = player2.pos.second + dy[i];
+                if(sx < 1 || sx > lines || sy < 1 || sy > columns || player1.mymap[sx][sy] == 1) {
+                    continue;
+                }
+                if(dist[sx][sy] == dist[player2.pos.first][player2.pos.second] - 1) {
+                    player2.pos = make_pair(sx,sy);
+                    player2.enemyMap[sx][sy] = 0;
+                    if(isItDone())
+                        return 1;
+                    printf("Good move. You have one more try.\n");
+                    break;
+                }
+            }
+        }
+        else {
+            int randMove = rand() % 4;
+            int sx = player2.pos.first + dx[randMove];
+            int sy = player2.pos.second + dy[randMove];
+            if(sx < 1 || sx > lines || sy < 1 || sy > columns || player1.mymap[sx][sy] == 1) {
+                printf("Tzeapa. N-ai mai luat tzeapa? Fortza Steaua!!!!\n");
+                player2.enemyMap[sx][sy] = 1;
+                break;
+            }
+            player2.pos = make_pair(sx,sy);
+            player2.enemyMap[sx][sy] = 0;
+            if(isItDone())
+                return 1;
+            printf("Good move. You have one more try.\n");
+        }
+    }
+    return 0;
+}
+
+void dfsDistance(int px, int py) {
+    viz[px][py] = 1;
+
+    for(int i = 0; i < 4; i++) {
+        int sx = px + dx[i];
+        int sy = py + dy[i];
+        if(sx < 1 || sx > lines || sy < 1 || sy > columns || viz[sx][sy] || player1.mymap[sx][sy])
+            continue;
+        dist[sx][sy] = dist[px][py] + 1;
+        dfsDistance(sx,sy);
+    }
+}
 
 int main () {
+
+    srand(time(0));
 
     beforeStartGame();
 
@@ -353,9 +410,22 @@ int main () {
     printf("\nGO\n");
     Sleep(1000);
 
+    if(gameType == 1) {
+        for(int i = 1; i <= lines; i++)
+            for(int j = 1; j <= columns; j++)
+                dist[i][j] = 1000000000;
+        dist[lines][columns] = 0;
+        dfsDistance(lines, columns);
+    }
+
     int turn = 1;
     while(1) {
-        if(turn) {
+        if(gameType == 1 && !turn) {
+            printf("PLAYER 2:\n");
+            if(playAI())
+                break;
+        }
+        else if(turn) {
             printf("PLAYER 1:\n");
             if(playGame(player1, player2))
                 break;
