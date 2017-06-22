@@ -17,7 +17,7 @@ int dy[4] = {0,-1,0,1};
 
 class Player {
 public:
-    int status;
+    int status, difficulty;
     int mymap[NMAX][NMAX];
     int enemyMap[NMAX][NMAX];
     pair<int, int> pos;
@@ -181,6 +181,13 @@ void customMap(int index) {
     }
 }
 
+void selectDifficulty() {
+    int diff = 0;
+    printf("Please choose difficulty level. Press 1 for Easy, 2 for Medium and 3 for Hard.\n");
+    scanf("%d",&diff);
+    player2.difficulty = diff;
+}
+
 void setInformationAboutEnemy() {
     player1.pos.first = player1.pos.second = 1;
     player2.pos.first = player2.pos.second = 1;
@@ -209,6 +216,9 @@ void beforeStartGame() {
         if(gameType != 1 && gameType != 2)
             printf("Please press 1 or 2 :).\n");
     }while(gameType != 1 && gameType != 2);
+    if(gameType == 1) {
+        selectDifficulty();
+    }
     player1.status = 1; // 1 - player, 0 - computer
     player2.status = (gameType == 1 ? 0 : 1);
 
